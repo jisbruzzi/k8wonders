@@ -303,6 +303,390 @@ input TagCreateInput {
   posts: PostRelateToManyForCreateInput
 }
 
+type Card {
+  id: ID!
+  name: String
+  image: ImageFieldOutput
+  color: Color
+  effects: Effect
+}
+
+interface ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  url: String!
+}
+
+enum ImageExtension {
+  jpg
+  png
+  webp
+  gif
+}
+
+input CardWhereUniqueInput {
+  id: ID
+}
+
+input CardWhereInput {
+  AND: [CardWhereInput!]
+  OR: [CardWhereInput!]
+  NOT: [CardWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  color: ColorWhereInput
+  effects: EffectWhereInput
+}
+
+input CardOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+input CardUpdateInput {
+  name: String
+  image: ImageFieldInput
+  color: ColorRelateToOneForUpdateInput
+  effects: EffectRelateToOneForUpdateInput
+}
+
+input ImageFieldInput {
+  upload: Upload
+  ref: String
+}
+
+"""
+The `Upload` scalar type represents a file upload.
+"""
+scalar Upload
+
+input ColorRelateToOneForUpdateInput {
+  create: ColorCreateInput
+  connect: ColorWhereUniqueInput
+  disconnect: Boolean
+}
+
+input EffectRelateToOneForUpdateInput {
+  create: EffectCreateInput
+  connect: EffectWhereUniqueInput
+  disconnect: Boolean
+}
+
+input CardUpdateArgs {
+  where: CardWhereUniqueInput!
+  data: CardUpdateInput!
+}
+
+input CardCreateInput {
+  name: String
+  image: ImageFieldInput
+  color: ColorRelateToOneForCreateInput
+  effects: EffectRelateToOneForCreateInput
+}
+
+input ColorRelateToOneForCreateInput {
+  create: ColorCreateInput
+  connect: ColorWhereUniqueInput
+}
+
+input EffectRelateToOneForCreateInput {
+  create: EffectCreateInput
+  connect: EffectWhereUniqueInput
+}
+
+type Color {
+  id: ID!
+  name: String
+  code: String
+  description: Color_description_Document
+  cards(
+    where: CardWhereInput! = {}
+    orderBy: [CardOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Card!]
+  cardsCount(where: CardWhereInput! = {}): Int
+}
+
+type Color_description_Document {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+input ColorWhereUniqueInput {
+  id: ID
+}
+
+input ColorWhereInput {
+  AND: [ColorWhereInput!]
+  OR: [ColorWhereInput!]
+  NOT: [ColorWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  code: StringFilter
+  cards: CardManyRelationFilter
+}
+
+input CardManyRelationFilter {
+  every: CardWhereInput
+  some: CardWhereInput
+  none: CardWhereInput
+}
+
+input ColorOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  code: OrderDirection
+}
+
+input ColorUpdateInput {
+  name: String
+  code: String
+  description: JSON
+  cards: CardRelateToManyForUpdateInput
+}
+
+input CardRelateToManyForUpdateInput {
+  disconnect: [CardWhereUniqueInput!]
+  set: [CardWhereUniqueInput!]
+  create: [CardCreateInput!]
+  connect: [CardWhereUniqueInput!]
+}
+
+input ColorUpdateArgs {
+  where: ColorWhereUniqueInput!
+  data: ColorUpdateInput!
+}
+
+input ColorCreateInput {
+  name: String
+  code: String
+  description: JSON
+  cards: CardRelateToManyForCreateInput
+}
+
+input CardRelateToManyForCreateInput {
+  create: [CardCreateInput!]
+  connect: [CardWhereUniqueInput!]
+}
+
+type Effect {
+  id: ID!
+  ProductionEffect(
+    where: ProductionEffectWhereInput! = {}
+    orderBy: [ProductionEffectOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ProductionEffect!]
+  ProductionEffectCount(where: ProductionEffectWhereInput! = {}): Int
+  Card: Card
+}
+
+input EffectWhereUniqueInput {
+  id: ID
+}
+
+input EffectWhereInput {
+  AND: [EffectWhereInput!]
+  OR: [EffectWhereInput!]
+  NOT: [EffectWhereInput!]
+  id: IDFilter
+  ProductionEffect: ProductionEffectManyRelationFilter
+  Card: CardWhereInput
+}
+
+input ProductionEffectManyRelationFilter {
+  every: ProductionEffectWhereInput
+  some: ProductionEffectWhereInput
+  none: ProductionEffectWhereInput
+}
+
+input EffectOrderByInput {
+  id: OrderDirection
+}
+
+input EffectUpdateInput {
+  ProductionEffect: ProductionEffectRelateToManyForUpdateInput
+  Card: CardRelateToOneForUpdateInput
+}
+
+input ProductionEffectRelateToManyForUpdateInput {
+  disconnect: [ProductionEffectWhereUniqueInput!]
+  set: [ProductionEffectWhereUniqueInput!]
+  create: [ProductionEffectCreateInput!]
+  connect: [ProductionEffectWhereUniqueInput!]
+}
+
+input CardRelateToOneForUpdateInput {
+  create: CardCreateInput
+  connect: CardWhereUniqueInput
+  disconnect: Boolean
+}
+
+input EffectUpdateArgs {
+  where: EffectWhereUniqueInput!
+  data: EffectUpdateInput!
+}
+
+input EffectCreateInput {
+  ProductionEffect: ProductionEffectRelateToManyForCreateInput
+  Card: CardRelateToOneForCreateInput
+}
+
+input ProductionEffectRelateToManyForCreateInput {
+  create: [ProductionEffectCreateInput!]
+  connect: [ProductionEffectWhereUniqueInput!]
+}
+
+input CardRelateToOneForCreateInput {
+  create: CardCreateInput
+  connect: CardWhereUniqueInput
+}
+
+type Unit {
+  id: ID!
+  name: String
+  description: Unit_description_Document
+  image: ImageFieldOutput
+  ProductionEffect(
+    where: ProductionEffectWhereInput! = {}
+    orderBy: [ProductionEffectOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ProductionEffect!]
+  ProductionEffectCount(where: ProductionEffectWhereInput! = {}): Int
+}
+
+type Unit_description_Document {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+input UnitWhereUniqueInput {
+  id: ID
+}
+
+type LocalImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  url: String!
+}
+
+type CloudImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  url: String!
+}
+
+input UnitWhereInput {
+  AND: [UnitWhereInput!]
+  OR: [UnitWhereInput!]
+  NOT: [UnitWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  ProductionEffect: ProductionEffectManyRelationFilter
+}
+
+input UnitOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+input UnitUpdateInput {
+  name: String
+  description: JSON
+  image: ImageFieldInput
+  ProductionEffect: ProductionEffectRelateToManyForUpdateInput
+}
+
+input UnitUpdateArgs {
+  where: UnitWhereUniqueInput!
+  data: UnitUpdateInput!
+}
+
+input UnitCreateInput {
+  name: String
+  description: JSON
+  image: ImageFieldInput
+  ProductionEffect: ProductionEffectRelateToManyForCreateInput
+}
+
+type ProductionEffect {
+  id: ID!
+  abstractEffect: Effect
+  unit: Unit
+  quantity: Int
+  label: String
+}
+
+input ProductionEffectWhereUniqueInput {
+  id: ID
+}
+
+input ProductionEffectWhereInput {
+  AND: [ProductionEffectWhereInput!]
+  OR: [ProductionEffectWhereInput!]
+  NOT: [ProductionEffectWhereInput!]
+  id: IDFilter
+  abstractEffect: EffectWhereInput
+  unit: UnitWhereInput
+  quantity: IntNullableFilter
+}
+
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
+}
+
+input ProductionEffectOrderByInput {
+  id: OrderDirection
+  quantity: OrderDirection
+}
+
+input ProductionEffectUpdateInput {
+  abstractEffect: EffectRelateToOneForUpdateInput
+  unit: UnitRelateToOneForUpdateInput
+  quantity: Int
+}
+
+input UnitRelateToOneForUpdateInput {
+  create: UnitCreateInput
+  connect: UnitWhereUniqueInput
+  disconnect: Boolean
+}
+
+input ProductionEffectUpdateArgs {
+  where: ProductionEffectWhereUniqueInput!
+  data: ProductionEffectUpdateInput!
+}
+
+input ProductionEffectCreateInput {
+  abstractEffect: EffectRelateToOneForCreateInput
+  unit: UnitRelateToOneForCreateInput
+  quantity: Int
+}
+
+input UnitRelateToOneForCreateInput {
+  create: UnitCreateInput
+  connect: UnitWhereUniqueInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -330,6 +714,47 @@ type Mutation {
   updateTags(data: [TagUpdateArgs!]!): [Tag]
   deleteTag(where: TagWhereUniqueInput!): Tag
   deleteTags(where: [TagWhereUniqueInput!]!): [Tag]
+  createCard(data: CardCreateInput!): Card
+  createCards(data: [CardCreateInput!]!): [Card]
+  updateCard(where: CardWhereUniqueInput!, data: CardUpdateInput!): Card
+  updateCards(data: [CardUpdateArgs!]!): [Card]
+  deleteCard(where: CardWhereUniqueInput!): Card
+  deleteCards(where: [CardWhereUniqueInput!]!): [Card]
+  createColor(data: ColorCreateInput!): Color
+  createColors(data: [ColorCreateInput!]!): [Color]
+  updateColor(where: ColorWhereUniqueInput!, data: ColorUpdateInput!): Color
+  updateColors(data: [ColorUpdateArgs!]!): [Color]
+  deleteColor(where: ColorWhereUniqueInput!): Color
+  deleteColors(where: [ColorWhereUniqueInput!]!): [Color]
+  createEffect(data: EffectCreateInput!): Effect
+  createEffects(data: [EffectCreateInput!]!): [Effect]
+  updateEffect(where: EffectWhereUniqueInput!, data: EffectUpdateInput!): Effect
+  updateEffects(data: [EffectUpdateArgs!]!): [Effect]
+  deleteEffect(where: EffectWhereUniqueInput!): Effect
+  deleteEffects(where: [EffectWhereUniqueInput!]!): [Effect]
+  createUnit(data: UnitCreateInput!): Unit
+  createUnits(data: [UnitCreateInput!]!): [Unit]
+  updateUnit(where: UnitWhereUniqueInput!, data: UnitUpdateInput!): Unit
+  updateUnits(data: [UnitUpdateArgs!]!): [Unit]
+  deleteUnit(where: UnitWhereUniqueInput!): Unit
+  deleteUnits(where: [UnitWhereUniqueInput!]!): [Unit]
+  createProductionEffect(data: ProductionEffectCreateInput!): ProductionEffect
+  createProductionEffects(
+    data: [ProductionEffectCreateInput!]!
+  ): [ProductionEffect]
+  updateProductionEffect(
+    where: ProductionEffectWhereUniqueInput!
+    data: ProductionEffectUpdateInput!
+  ): ProductionEffect
+  updateProductionEffects(
+    data: [ProductionEffectUpdateArgs!]!
+  ): [ProductionEffect]
+  deleteProductionEffect(
+    where: ProductionEffectWhereUniqueInput!
+  ): ProductionEffect
+  deleteProductionEffects(
+    where: [ProductionEffectWhereUniqueInput!]!
+  ): [ProductionEffect]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -384,6 +809,46 @@ type Query {
   ): [Tag!]
   tag(where: TagWhereUniqueInput!): Tag
   tagsCount(where: TagWhereInput! = {}): Int
+  cards(
+    where: CardWhereInput! = {}
+    orderBy: [CardOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Card!]
+  card(where: CardWhereUniqueInput!): Card
+  cardsCount(where: CardWhereInput! = {}): Int
+  colors(
+    where: ColorWhereInput! = {}
+    orderBy: [ColorOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Color!]
+  color(where: ColorWhereUniqueInput!): Color
+  colorsCount(where: ColorWhereInput! = {}): Int
+  effects(
+    where: EffectWhereInput! = {}
+    orderBy: [EffectOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Effect!]
+  effect(where: EffectWhereUniqueInput!): Effect
+  effectsCount(where: EffectWhereInput! = {}): Int
+  units(
+    where: UnitWhereInput! = {}
+    orderBy: [UnitOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Unit!]
+  unit(where: UnitWhereUniqueInput!): Unit
+  unitsCount(where: UnitWhereInput! = {}): Int
+  productionEffects(
+    where: ProductionEffectWhereInput! = {}
+    orderBy: [ProductionEffectOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ProductionEffect!]
+  productionEffect(where: ProductionEffectWhereUniqueInput!): ProductionEffect
+  productionEffectsCount(where: ProductionEffectWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

@@ -15,7 +15,7 @@ A field: The individual bits of data on your list, each with its own type.
 // Like the `config` function we use in keystone.ts, we use functions
 // for putting in our config so we get useful errors. With typescript,
 // we get these even before code runs.
-import { list } from '@keystone-6/core';
+import { graphql, list } from '@keystone-6/core';
 
 // We're using some common fields in the starter. Check out https://keystonejs.com/docs/apis/fields#fields-api
 // for the full list of fields.
@@ -25,6 +25,9 @@ import {
   password,
   timestamp,
   select,
+  image,
+  integer,
+  virtual
 } from '@keystone-6/core/fields';
 // The document field is a more complicated field, so it's in its own package
 // Keystone aims to have all the base field types, but you can make your own
@@ -139,4 +142,68 @@ export const lists: Lists = {
       posts: relationship({ ref: 'Post.tags', many: true }),
     },
   }),
+  Card: list({
+    fields:{
+      name:text(),
+      image:image(),
+      color: relationship({ref:"Color.cards"}),
+      effects:relationship({ref:"Effect.Card"})
+    }
+  }),
+  Color: list({
+    fields:{
+      name:text(),
+      code:text(),
+      description:document(),
+      cards: relationship({ref:"Card.color",many:true})
+    }
+  }),
+  Effect:list({
+    fields:{
+      ProductionEffect:relationship({ref:"ProductionEffect.abstractEffect",many:true}),
+      Card:relationship({ref:"Card.effects"})
+    }
+  }),
+  Unit:list({
+    fields:{
+      name:text(),
+      description:document(),
+      image:image(),
+      ProductionEffect:relationship({ref:"ProductionEffect.unit",many:true,
+        ui:{
+          createView:{
+            fieldMode:"hidden"
+          },
+          listView:{
+            fieldMode:"read"
+          },
+          itemView:{
+            fieldMode:"read"
+          },
+        }
+      })
+    }
+  }),
+  ProductionEffect:list({
+    ui:{
+      labelField:"label"
+    },
+    fields:{
+      abstractEffect:relationship({ref:"Effect.ProductionEffect"}),
+      unit:relationship({ref:"Unit.ProductionEffect"}),
+      quantity:integer(),
+      label:virtual({
+        field:graphql.field({
+          type:graphql.String,
+          async resolve(item,args,context) {
+            const { name } = await context.query.Unit.findOne({
+              where: { id: item.unitId },
+              query: 'name',
+            });
+            return `${item.quantity} ${name}`
+          }
+        })
+      }),
+    },
+  })
 };

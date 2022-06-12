@@ -1,0 +1,3 @@
+{
+    "deno.enable": false /* UTILIZAR EL LANGUAGE SERVER DE DENO EN VEZ DE TYPESCRIPT "CÓMUN" */
+}

@@ -37,3 +37,59 @@ model Tag {
   name  String @default("")
   posts Post[] @relation("Post_tags")
 }
+
+model Card {
+  id              String  @id @default(cuid())
+  name            String  @default("")
+  image_filesize  Int?
+  image_extension String?
+  image_width     Int?
+  image_height    Int?
+  image_mode      String?
+  image_id        String?
+  color           Color?  @relation("Card_color", fields: [colorId], references: [id])
+  colorId         String? @map("color")
+  effects         Effect? @relation("Card_effects", fields: [effectsId], references: [id])
+  effectsId       String? @unique @map("effects")
+
+  @@index([colorId])
+}
+
+model Color {
+  id          String @id @default(cuid())
+  name        String @default("")
+  code        String @default("")
+  description String @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  cards       Card[] @relation("Card_color")
+}
+
+model Effect {
+  id               String             @id @default(cuid())
+  ProductionEffect ProductionEffect[] @relation("ProductionEffect_abstractEffect")
+  Card             Card?              @relation("Card_effects")
+}
+
+model Unit {
+  id               String             @id @default(cuid())
+  name             String             @default("")
+  description      String             @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  image_filesize   Int?
+  image_extension  String?
+  image_width      Int?
+  image_height     Int?
+  image_mode       String?
+  image_id         String?
+  ProductionEffect ProductionEffect[] @relation("ProductionEffect_unit")
+}
+
+model ProductionEffect {
+  id               String  @id @default(cuid())
+  abstractEffect   Effect? @relation("ProductionEffect_abstractEffect", fields: [abstractEffectId], references: [id])
+  abstractEffectId String? @map("abstractEffect")
+  unit             Unit?   @relation("ProductionEffect_unit", fields: [unitId], references: [id])
+  unitId           String? @map("unit")
+  quantity         Int?
+
+  @@index([abstractEffectId])
+  @@index([unitId])
+}
